@@ -1,0 +1,85 @@
+-- 1) Create the database
+CREATE DATABASE IF NOT EXISTS blog_db;
+
+-- 2) Switch to it
+use blog_db;
+
+-- 3) Create a 'users' table
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+   
+  fullName VARCHAR(50) NOT NULL,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  password varchar(100) NOT NULL
+);
+
+alter table users add phoneNo INT unique ;
+
+alter table users drop column phoneNO;
+ALTER TABLE users ADD PRIMARY KEY (phoneNo);
+ALTER TABLE users MODIFY phoneNo BIGINT;
+
+-- delete from users where id = 10; 
+
+select *from users
+
+CREATE TABLE IF NOT EXISTS posts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+  
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    authorId INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (authorId) REFERENCES users(id) ON DELETE CASCADE
+);
+
+DELIMITER  //
+create PROCEDURE Addposts(
+IN p_title varchar(200),
+IN p_content text,
+IN p_authorId INT)
+
+BEGIN
+
+INSERT INTO posts(title,content,authorId) values (p_title, p_content , p_authorId);
+END
+//
+DELIMITER ;
+show tables;
+select *from posts;
+
+
+
+
+ SELECT posts.id, title, content, created_at, users.fullName AS authorName
+    FROM posts
+    JOIN users ON posts.authorId = users.id
+    ORDER BY posts.created_at DESC
+    
+    
+    
+    
+    
+    create table if not exists comments(
+    id int AUTO_INCREMENT Primary key,
+    content text not null,
+    postId int not null,
+    userId int not null,
+    created_at timestamp default current_timestamp,
+    
+    foreign key(postId) references posts(id) on delete cascade,
+    foreign key(userId) references  users(id) on delete cascade
+    );
+    
+    select *from comments;
+    
+    
+    CREATE TABLE otp_verification (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    otp VARCHAR(10) NOT NULL,
+    expires_at DATETIME NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+select *from otp_verification;
